@@ -84,7 +84,9 @@ public final class PlayerListener implements Listener {
 				String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getIdentifier().toUpperCase() + "</bold></gradient>");
 
 				event.setCancelled(true);
-				Bukkit.broadcastMessage(formatted + " §r§f" + player.getName() + " §8§l➛ §r<color=#d4d9fc>" + event.getMessage() + "</color>");
+
+				String formattedMessage = ColorUtil.format("<color=#e6e6e6>" + event.getMessage() + "</color>");
+				Bukkit.broadcastMessage(formatted + " §r§f" + player.getName() + " §8§l➛ §r" + formattedMessage);
 			}
 		}
 
