@@ -84,12 +84,12 @@ public final class PlayerListener implements Listener {
 				String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getIdentifier().toUpperCase() + "</bold></gradient>");
 
 				event.setCancelled(true);
-				Bukkit.broadcastMessage(formatted + " §r§f" + player.getName() + " §8§l➛ §r" + event.getMessage());
+				Bukkit.broadcastMessage(formatted + " §r§f" + player.getName() + " §8§l➛ §r<color=#d4d9fc>" + event.getMessage() + "</color>");
 			}
 		}
 
 	}
-	
+
 	private void addPlayerToTeam(Player player, String groupName) {
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
