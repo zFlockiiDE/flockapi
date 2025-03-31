@@ -8,6 +8,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import ovh.fedox.flockapi.database.MongoDBManager;
+import ovh.fedox.flockapi.database.RedisManager;
 import ovh.fedox.flockapi.listener.PlayerListener;
 import ovh.fedox.flockapi.settings.Settings;
 
@@ -39,6 +40,8 @@ public final class FlockAPI extends SimplePlugin {
 		String database = Settings.MongoDB.MONGO_DATABASE;
 
 		mongoManager = new MongoDBManager(connectionString, database);
+
+		RedisManager.connect();
 
 		if (provider == null) {
 			Common.log("&cError: &7LuckPerms is not installed on this server.");
