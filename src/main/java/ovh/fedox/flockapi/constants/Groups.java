@@ -13,11 +13,12 @@ import lombok.Getter;
 @Getter
 public enum Groups {
 
-	CREATOR("creator", "creator", "#389c2d", "#38de26", 1),
-	ENTWICKER("entwickler", "dev", "#35adb8", "#24dced", 2),
-	BUILDER("builder", "builder", "#a3a3a3", "#d9d9d9", 3),
-	SUPPORTER("supporter", "sup", "#857d19", "#b0a613", 4),
-	COOL("cool", "cool", "#80248c", "#bf22d4", 5);
+	LE_CHEF("le_chef", "Le chef", "#389c2d", "#38de26", 1),
+	DEVELOPER("developer", "dev", "#35adb8", "#24dced", 2),
+	MODERATOR("moderator", "mod", "#bd2626", "#de1616", 3),
+	BUILDER("builder", "builder", "#a3a3a3", "#d9d9d9", 4),
+	CREATOR("creator", "creator", "#961da1", "#ce21de", 5),
+	COOL("cool", "cool", "#244c8c", "#2e6fd9", 6);
 
 	private final String identifier;
 	private final String name;
