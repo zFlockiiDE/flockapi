@@ -27,7 +27,6 @@ public class Properties {
 		} catch (IOException e) {
 			Common.logFramed("Failed to load properties file: ", e.getMessage());
 		}
-
 	}
 
 	/**
@@ -36,7 +35,7 @@ public class Properties {
 	 * @param key the key
 	 * @return the property
 	 */
-	public String set(String key) {
+	public String get(String key) {
 		return props.getProperty(key);
 	}
 
@@ -46,7 +45,7 @@ public class Properties {
 	 * @param key   the key
 	 * @param value the value
 	 */
-	public void get(String key, String value) {
+	public void set(String key, String value) {
 		props.setProperty(key, value);
 	}
 

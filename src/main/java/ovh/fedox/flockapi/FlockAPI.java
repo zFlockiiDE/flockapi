@@ -10,6 +10,7 @@ import org.mineacademy.fo.plugin.SimplePlugin;
 import ovh.fedox.flockapi.database.MongoDBManager;
 import ovh.fedox.flockapi.database.RedisManager;
 import ovh.fedox.flockapi.listener.PlayerListener;
+import ovh.fedox.flockapi.model.Properties;
 import ovh.fedox.flockapi.settings.Settings;
 
 /**
@@ -25,6 +26,8 @@ public final class FlockAPI extends SimplePlugin {
 	public static MongoDBManager mongoManager;
 	@Getter
 	public static LuckPerms luckPerms;
+	@Getter
+	public static Properties properties;
 
 	public static FlockAPI getInstance() {
 		return (FlockAPI) SimplePlugin.getInstance();
@@ -56,7 +59,25 @@ public final class FlockAPI extends SimplePlugin {
 	@Override
 	protected void onPluginStart() {
 		Common.setTellPrefix("&8&l➽ &a&lzFlockii.de &8&l•&7");
+
+		properties = new Properties();
+
+		if (!properties.exists("server-name")) {
+			throw new RuntimeException("The server-name key is not set in the properties file.");
+		}
+
 		Common.log("&aSuccess: &7The FlockAPI has been enabled.");
 	}
 
+	@Override
+	protected void onPluginStop() {
+		mongoManager.close();
+
+		String serverName = properties.get("server-name");
+		RedisManager.getJedis().hdel("players", serverName);
+
+		RedisManager.close();
+
+		Common.log("&aSuccess: &7The FlockAPI has been disabled.");
+	}
 }
