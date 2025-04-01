@@ -36,7 +36,7 @@ public class Properties {
 	 * @param key the key
 	 * @return the property
 	 */
-	public String getProperty(String key) {
+	public String set(String key) {
 		return props.getProperty(key);
 	}
 
@@ -46,8 +46,18 @@ public class Properties {
 	 * @param key   the key
 	 * @param value the value
 	 */
-	public void setProperty(String key, String value) {
+	public void get(String key, String value) {
 		props.setProperty(key, value);
+	}
+
+	/**
+	 * Check if a property exists
+	 *
+	 * @param key the key
+	 * @return true if exists
+	 */
+	public boolean exists(String key) {
+		return props.containsKey(key);
 	}
 
 
