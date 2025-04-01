@@ -24,6 +24,14 @@ Player_Listener:
   Join_Message: true
   Quit_Message: true
   Chat_Format: true
+  Achievements: true
+
+# -------------------------------------------------------------------------------------------------
+# General Settings
+# -------------------------------------------------------------------------------------------------
+
+General_Settings:
+  Count_Players: true
 
 # -------------------------------------------------------------------------------------------------
 # The formats used in the {date}, {date_short}, {date_month} and {location}. 

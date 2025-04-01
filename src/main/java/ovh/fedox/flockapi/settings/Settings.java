@@ -34,6 +34,7 @@ public final class Settings extends SimpleSettings {
 		public static Boolean JOIN_MESSAGE;
 		public static Boolean QUIT_MESSAGE;
 		public static Boolean CHAT_FORMAT;
+		public static Boolean ACHIEVEMENTS;
 
 		private static void init() {
 			setPathPrefix("Player_Listener");
@@ -41,6 +42,7 @@ public final class Settings extends SimpleSettings {
 			JOIN_MESSAGE = getBoolean("Join_Message");
 			QUIT_MESSAGE = getBoolean("Quit_Message");
 			CHAT_FORMAT = getBoolean("Chat_Format");
+			ACHIEVEMENTS = getBoolean("Achievements");
 		}
 	}
 
@@ -57,6 +59,16 @@ public final class Settings extends SimpleSettings {
 			REDIS_PORT = getString("Port");
 			REDIS_USER = getString("User");
 			REDIS_PASSWORD = getString("Password");
+		}
+	}
+
+	public static class General_Settings {
+		public static Boolean COUNT_PLAYERS;
+
+		private static void init() {
+			setPathPrefix("General_Settings");
+
+			COUNT_PLAYERS = getBoolean("Count_Players");
 		}
 	}
 
