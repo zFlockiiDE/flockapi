@@ -80,13 +80,17 @@ public final class PlayerListener implements Listener {
 			String groupName = FlockAPI.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getPrimaryGroup();
 			Groups group = Groups.getGroupByName(groupName);
 
+			String formattedMessage = ColorUtil.format("<color=#e6e6e6>" + event.getMessage() + "</color>");
+
 			if (group != null) {
 				String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getIdentifier().toUpperCase() + "</bold></gradient>");
 
 				event.setCancelled(true);
 
-				String formattedMessage = ColorUtil.format("<color=#e6e6e6>" + event.getMessage() + "</color>");
 				Bukkit.broadcastMessage(formatted + " §r§f" + player.getName() + " §8§l➛ §r" + formattedMessage);
+			} else {
+				event.setCancelled(true);
+				Bukkit.broadcastMessage(player.getName() + " §8§l➛ §r" + formattedMessage);
 			}
 		}
 
