@@ -1,10 +1,13 @@
 package ovh.fedox.flockapi.listener;
 
+import com.earth2me.essentials.libs.kyori.adventure.text.Component;
+import io.papermc.paper.advancement.AdvancementDisplay;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
@@ -13,6 +16,7 @@ import org.mineacademy.fo.Common;
 import org.mineacademy.fo.annotation.AutoRegister;
 import ovh.fedox.flockapi.FlockAPI;
 import ovh.fedox.flockapi.constants.Groups;
+import ovh.fedox.flockapi.database.RedisManager;
 import ovh.fedox.flockapi.settings.Settings;
 import ovh.fedox.flockapi.util.ColorUtil;
 
@@ -47,11 +51,52 @@ public final class PlayerListener implements Listener {
 	}
 
 	@EventHandler
+	public void onPlayerAchievement(PlayerAdvancementDoneEvent event) {
+		event.message(null);
+
+		if (Settings.PlayerListener.ACHIEVEMENTS) {
+			String key = event.getAdvancement().getKey().getKey();
+
+			if (key.startsWith("recipes/")) {
+				return;
+			}
+
+			AdvancementDisplay display = event.getAdvancement().getDisplay();
+
+			String translatedTitle;
+			if (display != null) {
+				try {
+					translatedTitle = Component.translatable(
+							"advancements." + key.replace("/", ".") + ".title").toString();
+				} catch (NoClassDefFoundError e) {
+					translatedTitle = key.substring(key.lastIndexOf('/') + 1).replace('_', ' ');
+					translatedTitle = translatedTitle.substring(0, 1).toUpperCase() + translatedTitle.substring(1);
+				}
+			} else {
+				translatedTitle = key.substring(key.lastIndexOf('/') + 1).replace('_', ' ');
+				translatedTitle = translatedTitle.substring(0, 1).toUpperCase() + translatedTitle.substring(1);
+			}
+
+			Bukkit.broadcastMessage(Common.colorize("&8&l[&a⚔&8&l] &f" + event.getPlayer().getName() +
+					" &7folgendes Achievement erspielt: &a" + translatedTitle));
+
+		}
+
+	}
+
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 
 		if (Settings.PlayerListener.JOIN_MESSAGE) {
 			Bukkit.broadcastMessage(Common.colorize("&8&l[&a+&8&l] &7" + event.getPlayer().getName()));
+		}
+
+		if (Settings.General_Settings.COUNT_PLAYERS) {
+			String serverName = FlockAPI.getProperties().get("server-name");
+			int playerCount = Bukkit.getOnlinePlayers().size();
+
+			RedisManager.getJedis().hset("players", serverName, String.valueOf(playerCount));
 		}
 
 		FlockAPI.getMongoManager().getApiPlayerRepository().createIfNotExists(event.getPlayer().getUniqueId(), event.getPlayer().getName());
@@ -68,6 +113,13 @@ public final class PlayerListener implements Listener {
 
 		if (Settings.PlayerListener.QUIT_MESSAGE) {
 			Bukkit.broadcastMessage(Common.colorize("&8&l[&c-&8&l] &7" + event.getPlayer().getName()));
+		}
+
+		if (Settings.General_Settings.COUNT_PLAYERS) {
+			String serverName = FlockAPI.getProperties().get("server-name");
+			int playerCount = Bukkit.getOnlinePlayers().size() - 1;
+
+			RedisManager.getJedis().hset("players", serverName, String.valueOf(playerCount));
 		}
 	}
 
