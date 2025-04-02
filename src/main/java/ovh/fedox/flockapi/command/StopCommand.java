@@ -8,11 +8,8 @@ import org.mineacademy.fo.Messenger;
 import org.mineacademy.fo.annotation.AutoRegister;
 import org.mineacademy.fo.command.SimpleCommand;
 import org.mineacademy.fo.remain.Remain;
-import ovh.fedox.flockapi.FlockAPI;
+import ovh.fedox.flockapi.util.FCommon;
 import ovh.fedox.flockapi.util.SoundUtil;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 
 /**
  * StopCommand.java - Stops the server
@@ -45,17 +42,7 @@ public final class StopCommand extends SimpleCommand {
 
 			Common.runLater(20 * seconds, () -> {
 				for (Player player : Remain.getOnlinePlayers()) {
-					try {
-						ByteArrayOutputStream b = new ByteArrayOutputStream();
-						DataOutputStream out = new DataOutputStream(b);
-
-						out.writeUTF("Connect");
-						out.writeUTF("lobby");
-
-						player.sendPluginMessage(FlockAPI.getInstance(), "BungeeCord", b.toByteArray());
-					} catch (Exception e) {
-						player.kickPlayer("Der Server wird heruntergefahren.");
-					}
+					FCommon.sendToLobby(player);
 				}
 			});
 
@@ -63,17 +50,7 @@ public final class StopCommand extends SimpleCommand {
 		} else {
 			Common.runLater(() -> {
 				for (Player player : Remain.getOnlinePlayers()) {
-					try {
-						ByteArrayOutputStream b = new ByteArrayOutputStream();
-						DataOutputStream out = new DataOutputStream(b);
-
-						out.writeUTF("Connect");
-						out.writeUTF("lobby");
-
-						player.sendPluginMessage(FlockAPI.getInstance(), "BungeeCord", b.toByteArray());
-					} catch (Exception e) {
-						player.kickPlayer("Der Server wird heruntergefahren.");
-					}
+					FCommon.sendToLobby(player);
 				}
 			});
 
