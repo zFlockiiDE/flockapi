@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.bson.Document;
 import org.mineacademy.fo.Common;
 import ovh.fedox.flockapi.database.repository.ApiPlayerRepository;
+import ovh.fedox.flockapi.database.repository.FlockTransactionRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class MongoDBManager {
 	private MongoDatabase database;
 	@Getter
 	private ApiPlayerRepository apiPlayerRepository;
+	@Getter
+	private FlockTransactionRepository flockTransactionRepository;
 
 	/**
 	 * Creates a new MongoDB connection
@@ -37,9 +40,17 @@ public class MongoDBManager {
 			this.mongoClient = MongoClients.create(connectionString);
 			this.database = mongoClient.getDatabase(databaseName);
 
+			// Initialize repositories
 			MongoCollection<Document> apiPlayerCollection = database.getCollection("api_players");
 			this.apiPlayerRepository = new ApiPlayerRepository(apiPlayerCollection);
 			repositories.put("apiPlayer", apiPlayerRepository);
+
+			MongoCollection<Document> flockTransactionCollection = database.getCollection("flock_transactions");
+			this.flockTransactionRepository = new FlockTransactionRepository(flockTransactionCollection);
+			repositories.put("flockTransaction", flockTransactionRepository);
+
+			// Initialize the economy API
+			FlockEconomyAPI.initialize(this);
 
 			Common.log("&aSuccess: &7Successfully connected to MongoDB!");
 		} catch (Exception e) {
@@ -92,3 +103,4 @@ public class MongoDBManager {
 		}
 	}
 }
+
