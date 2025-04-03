@@ -207,6 +207,25 @@ public class PunishmentService {
 		return false;
 	}
 
+	public boolean isBanned(UUID player) {
+		Optional<PlayerPunishment> punishment = punishmentRepository.findByUUID(player);
+
+		if (punishment.isPresent()) {
+			PlayerPunishment playerPunishment = punishment.get();
+
+			if (playerPunishment.getType() == PunishType.BAN) {
+				Date now = new Date();
+				if (now.after(playerPunishment.getUntil())) {
+					punishmentRepository.delete(playerPunishment);
+					return false;
+				}
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Kick a player from the network
 	 *

@@ -3,6 +3,7 @@ package ovh.fedox.flockapi.listener;
 import com.earth2me.essentials.libs.kyori.adventure.text.Component;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -107,6 +108,7 @@ public final class PlayerListener implements Listener {
 		final UUID playerUniqueId = player.getUniqueId();
 
 		if (PunishmentService.getInstance().checkBan(player)) {
+			player.setGameMode(GameMode.SPECTATOR);
 			return;
 		}
 
