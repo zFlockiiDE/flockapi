@@ -31,9 +31,13 @@ public class PunishmentMenu extends MenuPagged<PunishReason> {
 	@Position(4)
 	private final Button targetButton;
 
+	private final OfflinePlayer targetPlayer;
+
 	public PunishmentMenu(OfflinePlayer punishPlayer) {
 		super(9 * 3, List.of(11, 12, 13, 14, 15, 15), Arrays.asList(PunishReason.values()));
 		setTitle("Wähle einen Grund");
+
+		this.targetPlayer = punishPlayer;
 
 		this.targetButton = new Button() {
 			@Override
@@ -61,7 +65,7 @@ public class PunishmentMenu extends MenuPagged<PunishReason> {
 
 	@Override
 	protected void onPageClick(Player player, PunishReason item, ClickType click) {
-		new ConfirmMenu(player, item).displayTo(player);
+		new ConfirmMenu(targetPlayer, item).displayTo(player);
 	}
 
 	@Override
