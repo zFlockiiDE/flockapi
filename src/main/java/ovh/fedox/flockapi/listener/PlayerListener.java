@@ -17,19 +17,24 @@ import org.mineacademy.fo.annotation.AutoRegister;
 import ovh.fedox.flockapi.FlockAPI;
 import ovh.fedox.flockapi.constants.Groups;
 import ovh.fedox.flockapi.database.RedisManager;
+import ovh.fedox.flockapi.database.service.punishment.PunishmentService;
 import ovh.fedox.flockapi.settings.Settings;
 import ovh.fedox.flockapi.util.ColorUtil;
+
+import java.util.UUID;
 
 /**
  * PlayerListener.java - Listener for player-related events
  * <p>
- * Created on 3/31/2025 at 4:18 AM by Fedox.
- * Copyright © 2025 Fedox. All rights reserved.
+ * Created on 3/31/2025 at 4:18 AM by Fedox. Copyright © 2025 Fedox. All rights reserved.
  */
 
 @AutoRegister
 public final class PlayerListener implements Listener {
 
+	/**
+	 * Initialize the teams for the scoreboard
+	 */
 	public static void initializeTeams() {
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
@@ -50,6 +55,11 @@ public final class PlayerListener implements Listener {
 		}
 	}
 
+	/**
+	 * Handle player advancement events
+	 *
+	 * @param event The advancement event
+	 */
 	@EventHandler
 	public void onPlayerAchievement(PlayerAdvancementDoneEvent event) {
 		event.message(null);
@@ -84,12 +94,24 @@ public final class PlayerListener implements Listener {
 
 	}
 
+	/**
+	 * Handle player join events
+	 *
+	 * @param event The player join event
+	 */
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 
+		final Player player = event.getPlayer();
+		final UUID playerUniqueId = player.getUniqueId();
+
+		if (PunishmentService.getInstance().checkBan(player)) {
+			return;
+		}
+
 		if (Settings.PlayerListener.JOIN_MESSAGE) {
-			Bukkit.broadcastMessage(Common.colorize("&8&l[&a+&8&l] &7" + event.getPlayer().getName()));
+			Bukkit.broadcastMessage(Common.colorize("&8&l[&a+&8&l] &7" + player.getName()));
 		}
 
 		if (Settings.General_Settings.COUNT_PLAYERS) {
@@ -99,20 +121,31 @@ public final class PlayerListener implements Listener {
 			RedisManager.getJedis().hset("players", serverName, String.valueOf(playerCount));
 		}
 
-		FlockAPI.getMongoManager().getApiPlayerRepository().createIfNotExists(event.getPlayer().getUniqueId(), event.getPlayer().getName());
-		FlockAPI.getMongoManager().getApiPlayerRepository().updateLastJoin(event.getPlayer().getUniqueId());
+		FlockAPI.getMongoManager().getApiPlayerRepository().createIfNotExists(playerUniqueId, player.getName());
+		FlockAPI.getMongoManager().getApiPlayerRepository().updateLastJoin(playerUniqueId);
 
-		String groupName = FlockAPI.getLuckPerms().getUserManager().getUser(event.getPlayer().getUniqueId()).getPrimaryGroup();
+		String groupName = FlockAPI.getLuckPerms().getUserManager().getUser(playerUniqueId).getPrimaryGroup();
 
-		addPlayerToTeam(event.getPlayer(), groupName);
+		addPlayerToTeam(player, groupName);
 	}
 
+	/**
+	 * Handle player quit events
+	 *
+	 * @param event The player quit event
+	 */
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(null);
 
+		final Player player = event.getPlayer();
+
+		if (PunishmentService.getInstance().checkBan(player)) {
+			return;
+		}
+
 		if (Settings.PlayerListener.QUIT_MESSAGE) {
-			Bukkit.broadcastMessage(Common.colorize("&8&l[&c-&8&l] &7" + event.getPlayer().getName()));
+			Bukkit.broadcastMessage(Common.colorize("&8&l[&c-&8&l] &7" + player.getName()));
 		}
 
 		if (Settings.General_Settings.COUNT_PLAYERS) {
@@ -123,10 +156,20 @@ public final class PlayerListener implements Listener {
 		}
 	}
 
+	/**
+	 * Handle player chat events
+	 *
+	 * @param event The player chat event
+	 */
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		final Player player = event.getPlayer();
+
+		if (PunishmentService.getInstance().checkMute(player)) {
+			event.setCancelled(true);
+			return;
+		}
 
 		if (Settings.PlayerListener.CHAT_FORMAT) {
 			String groupName = FlockAPI.getLuckPerms().getUserManager().getUser(player.getUniqueId()).getPrimaryGroup();
@@ -148,6 +191,12 @@ public final class PlayerListener implements Listener {
 
 	}
 
+	/**
+	 * Add a player to a team based on their group
+	 *
+	 * @param player    The player to add
+	 * @param groupName The group name to add the player to
+	 */
 	private void addPlayerToTeam(Player player, String groupName) {
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 

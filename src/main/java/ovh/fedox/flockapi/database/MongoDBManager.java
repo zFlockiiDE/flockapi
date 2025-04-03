@@ -7,8 +7,11 @@ import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import org.bson.Document;
 import org.mineacademy.fo.Common;
-import ovh.fedox.flockapi.database.repository.ApiPlayerRepository;
-import ovh.fedox.flockapi.database.repository.FlockTransactionRepository;
+import ovh.fedox.flockapi.database.repository.impl.ApiPlayerRepository;
+import ovh.fedox.flockapi.database.repository.impl.FlockTransactionRepository;
+import ovh.fedox.flockapi.database.repository.impl.PlayerPunishmentRepository;
+import ovh.fedox.flockapi.database.service.flockeconomy.FlockEconomyAPI;
+import ovh.fedox.flockapi.database.service.punishment.PunishmentService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +31,8 @@ public class MongoDBManager {
 	private ApiPlayerRepository apiPlayerRepository;
 	@Getter
 	private FlockTransactionRepository flockTransactionRepository;
+	@Getter
+	private PlayerPunishmentRepository playerPunishmentRepository;
 
 	/**
 	 * Creates a new MongoDB connection
@@ -49,8 +54,15 @@ public class MongoDBManager {
 			this.flockTransactionRepository = new FlockTransactionRepository(flockTransactionCollection);
 			repositories.put("flockTransaction", flockTransactionRepository);
 
+			MongoCollection<Document> playerPunishmentCollection = database.getCollection("player_punishments");
+			this.playerPunishmentRepository = new PlayerPunishmentRepository(playerPunishmentCollection);
+			repositories.put("playerPunishment", playerPunishmentRepository);
+
 			// Initialize the economy API
 			FlockEconomyAPI.initialize(this);
+
+			// Initialize the punishment api
+			PunishmentService.initialize(this);
 
 			Common.log("&aSuccess: &7Successfully connected to MongoDB!");
 		} catch (Exception e) {

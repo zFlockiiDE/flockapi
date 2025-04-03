@@ -1,4 +1,4 @@
-package ovh.fedox.flockapi.database.model;
+package ovh.fedox.flockapi.database.model.impl;
 
 import lombok.Getter;
 import lombok.Setter;

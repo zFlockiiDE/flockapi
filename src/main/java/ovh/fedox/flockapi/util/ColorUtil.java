@@ -63,7 +63,6 @@ public class ColorUtil {
 			String color = colorMatcher.group(1);
 			String content = colorMatcher.group(2);
 
-			// Apply color to the content
 			String coloredText = colorize(content, color) + "§r";
 			colorMatcher.appendReplacement(result, Matcher.quoteReplacement(coloredText));
 		}
@@ -84,10 +83,8 @@ public class ColorUtil {
 			String endColor = gradientMatcher.group(2);
 			String content = gradientMatcher.group(3);
 
-			// Check for bold tags within the gradient content
 			boolean hasBold = content.contains("§l");
 
-			// Apply gradient to the content, preserving bold formatting
 			String gradientText = applyGradientWithFormatting(content, startColor, endColor) + "§r";
 			gradientMatcher.appendReplacement(result, Matcher.quoteReplacement(gradientText));
 		}

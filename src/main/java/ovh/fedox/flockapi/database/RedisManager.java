@@ -8,7 +8,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 /**
- * RedisManager.java -
+ * RedisManager.java - Manager for Redis connections
  * <p>
  * Created on 3/31/2025 at 8:11 PM by Fedox.
  * Copyright © 2025 Fedox. All rights reserved.
@@ -24,6 +24,9 @@ public class RedisManager {
 	@Getter
 	private static Jedis jedis;
 
+	/**
+	 * Connects to the Redis server
+	 */
 	public static void connect() {
 		jedis = new JedisPool(REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD).getResource();
 
@@ -32,6 +35,9 @@ public class RedisManager {
 		}
 	}
 
+	/**
+	 * Closes the Redis connection
+	 */
 	public static void close() {
 		jedis.close();
 

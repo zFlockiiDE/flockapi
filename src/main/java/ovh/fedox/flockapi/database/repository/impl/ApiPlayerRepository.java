@@ -1,9 +1,10 @@
-package ovh.fedox.flockapi.database.repository;
+package ovh.fedox.flockapi.database.repository.impl;
 
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
-import ovh.fedox.flockapi.database.model.ApiPlayer;
+import ovh.fedox.flockapi.database.model.impl.ApiPlayer;
+import ovh.fedox.flockapi.database.repository.MongoRepository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -84,7 +85,7 @@ public class ApiPlayerRepository extends MongoRepository<ApiPlayer> {
 	/**
 	 * Add play time to a player
 	 *
-	 * @param uuid The player's UUID
+	 * @param uuid   The player's UUID
 	 * @param flocks Flocks to add
 	 */
 	public void addFlocks(UUID uuid, int flocks) {

@@ -1,9 +1,10 @@
-package ovh.fedox.flockapi.database.model;
+package ovh.fedox.flockapi.database.model.impl;
 
 
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
+import ovh.fedox.flockapi.database.model.GameEntity;
 
 import java.util.Date;
 import java.util.UUID;

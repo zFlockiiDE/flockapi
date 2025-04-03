@@ -7,6 +7,8 @@ import org.mineacademy.fo.annotation.AutoRegister;
 import org.mineacademy.fo.command.SimpleCommand;
 import ovh.fedox.flockapi.util.SoundUtil;
 
+import java.util.List;
+
 /**
  * GamemodeCommand.java - The command to change the gamemode of a player
  * <p>
@@ -45,6 +47,19 @@ public final class GamemodeCommand extends SimpleCommand {
 		target.setGameMode(mode);
 		tellSuccess("Der Gamemode von '" + target.getName() + "' wurde auf '" + mode.name() + "' gesetzt.");
 		SoundUtil.playSound(getPlayer(), SoundUtil.SoundType.SUCCESS);
+	}
+
+	@Override
+	protected List<String> tabComplete() {
+		if (args.length == 1) {
+			return List.of("0", "1", "2", "3", "s", "c", "a", "sp", "survival", "creative", "adventure", "spectator");
+		}
+
+		if (args.length == 2) {
+			return completeLastWordPlayerNames();
+		}
+
+		return super.tabComplete();
 	}
 
 	private GameMode findGamemode(String input) {

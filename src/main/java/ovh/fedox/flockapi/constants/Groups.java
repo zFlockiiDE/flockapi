@@ -4,7 +4,7 @@ package ovh.fedox.flockapi.constants;
 import lombok.Getter;
 
 /**
- * Groups.java -
+ * Groups.java - Enum for different player groups
  * <p>
  * Created on 3/31/2025 at 4:46 AM by Fedox.
  * Copyright © 2025 Fedox. All rights reserved.
@@ -34,6 +34,12 @@ public enum Groups {
 		this.priority = priority;
 	}
 
+	/**
+	 * Get a group by its name
+	 *
+	 * @param name the name of the group
+	 * @return the group if found, null otherwise
+	 */
 	public static Groups getGroupByName(String name) {
 		for (Groups group : Groups.values()) {
 			if (group.getIdentifier().equalsIgnoreCase(name)) {

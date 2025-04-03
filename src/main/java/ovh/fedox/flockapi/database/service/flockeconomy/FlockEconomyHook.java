@@ -1,9 +1,8 @@
-package ovh.fedox.flockapi.database;
+package ovh.fedox.flockapi.database.service.flockeconomy;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import ovh.fedox.flockapi.database.FlockEconomyAPI;
 
 import java.util.UUID;
 
@@ -21,7 +20,6 @@ public class FlockEconomyHook {
 	 * @param plugin The plugin instance
 	 */
 	public static void registerService(JavaPlugin plugin) {
-		// Register the service for other plugins to use
 		plugin.getServer().getServicesManager().register(
 				FlockEconomyAPI.class,
 				FlockEconomyAPI.getInstance(),
@@ -43,9 +41,9 @@ public class FlockEconomyHook {
 	/**
 	 * Example of how to add flocks to a player from another plugin
 	 *
-	 * @param player The player to add flocks to
-	 * @param amount The amount to add
-	 * @param reason The reason for adding
+	 * @param player     The player to add flocks to
+	 * @param amount     The amount to add
+	 * @param reason     The reason for adding
 	 * @param pluginName The name of the plugin adding the flocks
 	 * @return True if successful
 	 */
@@ -61,9 +59,9 @@ public class FlockEconomyHook {
 	/**
 	 * Example of how to remove flocks from a player from another plugin
 	 *
-	 * @param player The player to remove flocks from
-	 * @param amount The amount to remove
-	 * @param reason The reason for removing
+	 * @param player     The player to remove flocks from
+	 * @param amount     The amount to remove
+	 * @param reason     The reason for removing
 	 * @param pluginName The name of the plugin removing the flocks
 	 * @return True if successful
 	 */
@@ -79,10 +77,10 @@ public class FlockEconomyHook {
 	/**
 	 * Example of how to transfer flocks between players from another plugin
 	 *
-	 * @param from The player sending flocks
-	 * @param to The player receiving flocks
-	 * @param amount The amount to transfer
-	 * @param reason The reason for the transfer
+	 * @param from       The player sending flocks
+	 * @param to         The player receiving flocks
+	 * @param amount     The amount to transfer
+	 * @param reason     The reason for the transfer
 	 * @param pluginName The name of the plugin initiating the transfer
 	 * @return True if successful
 	 */

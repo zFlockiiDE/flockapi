@@ -11,10 +11,9 @@ import org.mineacademy.fo.command.SimpleCommand;
 import ovh.fedox.flockapi.util.SoundUtil;
 
 /**
- * DyeCommand.java -
+ * DyeCommand.java - Let's dye some items!
  * <p>
- * Created on 4/1/2025 at 7:42 PM by Fedox.
- * Copyright © 2025 Fedox. All rights reserved.
+ * Created on 4/1/2025 at 7:42 PM by Fedox. Copyright © 2025 Fedox. All rights reserved.
  */
 
 @AutoRegister

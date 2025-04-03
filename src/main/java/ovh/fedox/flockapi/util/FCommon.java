@@ -18,7 +18,11 @@ import java.io.DataOutputStream;
 @UtilityClass
 public class FCommon {
 
-
+	/**
+	 * Sends the player to the lobby server
+	 *
+	 * @param player the player to send
+	 */
 	public static void sendToLobby(Player player) {
 		try {
 			ByteArrayOutputStream b = new ByteArrayOutputStream();

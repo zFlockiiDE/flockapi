@@ -1,11 +1,10 @@
-package ovh.fedox.flockapi.database;
+package ovh.fedox.flockapi.database.service.flockeconomy;
 
-import org.mineacademy.fo.Common;
 import ovh.fedox.flockapi.database.MongoDBManager;
-import ovh.fedox.flockapi.database.model.ApiPlayer;
-import ovh.fedox.flockapi.database.model.FlockTransaction;
-import ovh.fedox.flockapi.database.repository.ApiPlayerRepository;
-import ovh.fedox.flockapi.database.repository.FlockTransactionRepository;
+import ovh.fedox.flockapi.database.model.impl.ApiPlayer;
+import ovh.fedox.flockapi.database.model.impl.FlockTransaction;
+import ovh.fedox.flockapi.database.repository.impl.ApiPlayerRepository;
+import ovh.fedox.flockapi.database.repository.impl.FlockTransactionRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -99,7 +98,6 @@ public class FlockEconomyAPI {
 			player.setFlocks(player.getFlocks() + amount);
 			playerRepository.save(player);
 
-			// Log transaction
 			FlockTransaction transaction = new FlockTransaction(
 					uuid,
 					FlockTransaction.TransactionType.ADD,

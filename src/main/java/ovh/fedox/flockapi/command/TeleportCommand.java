@@ -7,6 +7,8 @@ import org.mineacademy.fo.annotation.AutoRegister;
 import org.mineacademy.fo.command.SimpleCommand;
 import ovh.fedox.flockapi.util.SoundUtil;
 
+import java.util.List;
+
 /**
  * TeleportCommand.java - Teleport to a other player or coordinate
  * <p>
@@ -67,5 +69,22 @@ public final class TeleportCommand extends SimpleCommand {
 				SoundUtil.playSound(getPlayer(), SoundUtil.SoundType.FAILURE);
 			}
 		}
+	}
+
+	@Override
+	protected List<String> tabComplete() {
+		if (args.length == 1) {
+			return completeLastWordPlayerNames();
+		}
+
+		if (args.length == 2) {
+			return completeLastWordPlayerNames();
+		}
+
+		if (args.length == 3) {
+			return List.of("0", "0", "0");
+		}
+
+		return super.tabComplete();
 	}
 }

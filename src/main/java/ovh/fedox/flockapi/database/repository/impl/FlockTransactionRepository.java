@@ -1,11 +1,11 @@
-package ovh.fedox.flockapi.database.repository;
+package ovh.fedox.flockapi.database.repository.impl;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import ovh.fedox.flockapi.database.model.FlockTransaction;
+import ovh.fedox.flockapi.database.model.impl.FlockTransaction;
 import ovh.fedox.flockapi.database.repository.MongoRepository;
 
 import java.util.Date;

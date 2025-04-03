@@ -1,10 +1,14 @@
 package ovh.fedox.flockapi;
 
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import ovh.fedox.flockapi.database.MongoDBManager;
@@ -20,8 +24,9 @@ import ovh.fedox.flockapi.settings.Settings;
  * Copyright © 2025 Fedox. All rights reserved.
  */
 
-public final class FlockAPI extends SimplePlugin {
+public final class FlockAPI extends SimplePlugin implements PluginMessageListener {
 
+	public static final String BUNGEECORD_CHANNEL = "BungeeCord";
 	@Getter
 	public static MongoDBManager mongoManager;
 	@Getter
@@ -60,6 +65,9 @@ public final class FlockAPI extends SimplePlugin {
 	protected void onPluginStart() {
 		Common.setTellPrefix("&8&l➽ &a&lzFlockii.de &8&l•&7");
 
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
+		this.getServer().getMessenger().registerIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
+
 		properties = new Properties();
 
 		if (!properties.exists("server-name")) {
@@ -79,5 +87,19 @@ public final class FlockAPI extends SimplePlugin {
 		RedisManager.close();
 
 		Common.log("&aSuccess: &7The FlockAPI has been disabled.");
+	}
+
+	@Override
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+		if (!channel.equals(BUNGEECORD_CHANNEL)) {
+			return;
+		}
+
+		ByteArrayDataInput in = ByteStreams.newDataInput(message);
+		String subchannel = in.readUTF();
+
+		if (subchannel.equals("KickPlayer")) {
+			getLogger().info("Received response from BungeeCord on KickPlayer channel");
+		}
 	}
 }

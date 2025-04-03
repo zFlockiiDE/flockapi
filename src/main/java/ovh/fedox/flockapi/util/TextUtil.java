@@ -13,6 +13,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TextUtil {
 
+	/**
+	 * Attention: This method is a bit broken and can't reproduce more than 1 of the same letter and don't support upper case letters.
+	 *
+	 * @param text The text to convert
+	 * @return The converted text
+	 * @deprecated This method is deprecated and may not work as expected.
+	 */
+	@Deprecated
 	public static String convertToTinyLetter(String text) {
 		StringBuilder builder = new StringBuilder();
 
