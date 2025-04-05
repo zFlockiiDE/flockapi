@@ -1,6 +1,7 @@
 package ovh.fedox.flockapi.util;
 
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +19,62 @@ public class ColorUtil {
 	private static final Pattern GRADIENT_PATTERN = Pattern.compile("<gradient=#([0-9A-Fa-f]{6}),#([0-9A-Fa-f]{6})>(.*?)</gradient>");
 	private static final Pattern COLOR_PATTERN = Pattern.compile("<color=#([0-9A-Fa-f]{6})>(.*?)</color>");
 	private static final Pattern BOLD_PATTERN = Pattern.compile("<bold>(.*?)</bold>");
+
+	/**
+	 * The color gradient to animate text with
+	 */
+	private static final String[] COLOR_GRADIENT = {
+			"#4CFF41", "#48F13C", "#44E237", "#40D432", "#3CC62D",
+			"#38B729", "#34A924", "#309B1F", "#2C8C1A", "#287E15"
+	};
+
+	/**
+	 * Interpolate between two colors by a fraction
+	 *
+	 * @param color1   The first color
+	 * @param color2   The second color
+	 * @param fraction The fraction to interpolate by
+	 * @return The interpolated color in hex format (#RRGGBB)
+	 */
+	public static String interpolateColor(String color1, String color2, double fraction) {
+		int r1 = Integer.parseInt(color1.substring(1, 3), 16);
+		int g1 = Integer.parseInt(color1.substring(3, 5), 16);
+		int b1 = Integer.parseInt(color1.substring(5, 7), 16);
+
+		int r2 = Integer.parseInt(color2.substring(1, 3), 16);
+		int g2 = Integer.parseInt(color2.substring(3, 5), 16);
+		int b2 = Integer.parseInt(color2.substring(5, 7), 16);
+
+		int r = (int) (r1 + fraction * (r2 - r1));
+		int g = (int) (g1 + fraction * (g2 - g1));
+		int b = (int) (b1 + fraction * (b2 - b1));
+
+		return String.format("#%02X%02X%02X", r, g, b);
+	}
+
+	/**
+	 * Animate text with a color gradient
+	 *
+	 * @param text              The text to animate
+	 * @param animationProgress The progress of the animation
+	 * @return The animated text
+	 */
+	public static String animateGradient(String text, double animationProgress) {
+		StringBuilder result = new StringBuilder();
+		int gradientLength = COLOR_GRADIENT.length;
+		int extendedLength = Math.max(text.length(), gradientLength);
+
+		for (int i = 0; i < text.length(); i++) {
+			double position = (animationProgress + (double) i / extendedLength) % 1.0;
+			int index = (int) (position * gradientLength);
+			int nextIndex = (index + 1) % gradientLength;
+
+			double fraction = (position * gradientLength) % 1.0;
+			String color = ColorUtil.interpolateColor(COLOR_GRADIENT[index], COLOR_GRADIENT[nextIndex], fraction);
+			result.append(ChatColor.of(color)).append(text.charAt(i));
+		}
+		return result.toString();
+	}
 
 	/**
 	 * Process text with color and formatting tags
