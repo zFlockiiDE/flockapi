@@ -14,8 +14,12 @@ import org.mineacademy.fo.settings.SimpleSettings;
 @Getter
 public final class Settings extends SimpleSettings {
 
+	public static String PROXY_IP;
+
 	private static void init() {
 		setPathPrefix(null);
+
+		PROXY_IP = getString("Proxy_IP");
 	}
 
 	public static class MongoDB {
