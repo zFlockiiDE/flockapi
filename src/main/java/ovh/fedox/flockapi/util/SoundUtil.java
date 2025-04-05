@@ -2,8 +2,13 @@ package ovh.fedox.flockapi.util;
 
 
 import lombok.experimental.UtilityClass;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompSound;
+import ovh.fedox.flockapi.FlockAPI;
 
 /**
  * SoundUtil.java - Sound utils for playing sounds
@@ -36,6 +41,30 @@ public class SoundUtil {
 				CompSound.BLOCK_NOTE_BLOCK_BASS.play(player, 0.4f, 0.4f);
 				break;
 		}
+	}
+
+	/**
+	 * Play the start sound for the player
+	 *
+	 * @param player The player to play the sound for
+	 */
+	public static void playStartSound(Player player) {
+		Location loc = player.getLocation();
+		Plugin plugin = SimplePlugin.getPlugin(FlockAPI.class);
+
+		player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_HARP, 1.0F, 1.0F);
+		player.getServer().getScheduler().runTaskLater(plugin, () -> {
+			player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_BIT, 1.0F, 1.2F);
+		}, 2L);
+		player.getServer().getScheduler().runTaskLater(plugin, () -> {
+			player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_CHIME, 1.0F, 1.4F);
+		}, 4L);
+		player.getServer().getScheduler().runTaskLater(plugin, () -> {
+			player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0F, 1.6F);
+		}, 6L);
+		player.getServer().getScheduler().runTaskLater(plugin, () -> {
+			player.playSound(loc, Sound.BLOCK_NOTE_BLOCK_BELL, 1.0F, 1.6F);
+		}, 8L);
 	}
 
 	/**
