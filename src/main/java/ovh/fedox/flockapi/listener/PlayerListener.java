@@ -6,11 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.mineacademy.fo.Common;
@@ -72,6 +70,10 @@ public final class PlayerListener implements Listener {
 				return;
 			}
 
+			if (key.equals("root")) {
+				return;
+			}
+
 			AdvancementDisplay display = event.getAdvancement().getDisplay();
 
 			String translatedTitle;
@@ -88,11 +90,28 @@ public final class PlayerListener implements Listener {
 				translatedTitle = translatedTitle.substring(0, 1).toUpperCase() + translatedTitle.substring(1);
 			}
 
+			if (translatedTitle.equalsIgnoreCase("Root")) {
+				return;
+			}
+
 			Bukkit.broadcastMessage(Common.colorize("&8&l[&a⚔&8&l] &f" + event.getPlayer().getName() +
 					" &7folgendes Achievement erspielt: &a" + translatedTitle));
 
 		}
 
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerLogin(PlayerLoginEvent event) {
+		String joinedAddress = event.getRealAddress().getHostAddress();
+		String bungeeCordAddress = Settings.PROXY_IP;
+
+		System.out.println("joinedAddress: " + joinedAddress);
+		System.out.println("bungeeCordAddress: " + bungeeCordAddress);
+
+		if (!joinedAddress.equals(bungeeCordAddress)) {
+			event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Common.colorize("deine mudda stinkt nach fisch"));
+		}
 	}
 
 	/**
@@ -122,6 +141,7 @@ public final class PlayerListener implements Listener {
 
 			RedisManager.getJedis().hset("players", serverName, String.valueOf(playerCount));
 		}
+
 
 		FlockAPI.getMongoManager().getApiPlayerRepository().createIfNotExists(playerUniqueId, player.getName());
 		FlockAPI.getMongoManager().getApiPlayerRepository().updateLastJoin(playerUniqueId);
