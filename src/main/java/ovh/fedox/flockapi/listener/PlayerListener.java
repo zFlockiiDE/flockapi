@@ -35,22 +35,28 @@ public final class PlayerListener implements Listener {
 	 * Initialize the teams for the scoreboard
 	 */
 	public static void initializeTeams() {
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		try {
+			Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
-		Team defaultTeam = scoreboard.getTeam("z_default");
-		if (defaultTeam == null) {
-			defaultTeam = scoreboard.registerNewTeam("z_default");
-		}
-
-		for (Groups group : Groups.values()) {
-			String teamName = group.getPriority() + "_" + group.getIdentifier();
-			Team team = scoreboard.getTeam(teamName);
-			if (team == null) {
-				team = scoreboard.registerNewTeam(teamName);
+			// Create default team if it doesn't exist
+			Team defaultTeam = scoreboard.getTeam("z_default");
+			if (defaultTeam == null) {
+				defaultTeam = scoreboard.registerNewTeam("z_default");
 			}
 
-			String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getName().toUpperCase() + "</bold></gradient>");
-			team.setPrefix(formatted + " §8§l➛ §r§f");
+			for (Groups group : Groups.values()) {
+				String teamName = group.getPriority() + "_" + group.getIdentifier();
+				Team team = scoreboard.getTeam(teamName);
+				if (team == null) {
+					team = scoreboard.registerNewTeam(teamName);
+				}
+
+				String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getName().toUpperCase() + "</bold></gradient>");
+				team.setPrefix(formatted + " §8§l➛ §r§f");
+			}
+		} catch (Exception e) {
+			FlockAPI.getInstance().getLogger().severe("Error initializing teams: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -219,35 +225,56 @@ public final class PlayerListener implements Listener {
 	 * @param player    The player to add
 	 * @param groupName The group name to add the player to
 	 */
+	/**
+	 * Add a player to a team based on their group
+	 *
+	 * @param player    The player to add
+	 * @param groupName The group name to add the player to
+	 */
 	private void addPlayerToTeam(Player player, String groupName) {
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		try {
+			Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+			String playerName = player.getName();
 
-		for (Team team : scoreboard.getTeams()) {
-			if (team.hasEntry(player.getName())) {
-				team.removeEntry(player.getName());
-			}
-		}
-
-		if (groupName.equals("default")) {
-			Team defaultTeam = scoreboard.getTeam("z_default");
-			if (defaultTeam != null) {
-				defaultTeam.addEntry(player.getName());
-				player.setPlayerListName(player.getName());
-			}
-		} else {
-			Groups group = Groups.getGroupByName(groupName);
-
-			if (group != null) {
-				String teamName = group.getPriority() + "_" + group.getIdentifier();
-				Team team = scoreboard.getTeam(teamName);
-
-				if (team != null) {
-					team.addEntry(player.getName());
-
-					String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getName().toUpperCase() + "</bold></gradient>");
-					player.setPlayerListName(formatted + " §8§l➛ §r§f" + player.getName());
+			Team currentTeam = null;
+			for (Team team : scoreboard.getTeams()) {
+				if (team.hasEntry(playerName)) {
+					currentTeam = team;
+					break;
 				}
 			}
+
+			Team targetTeam = null;
+			if (groupName.equals("default")) {
+				targetTeam = scoreboard.getTeam("z_default");
+			} else {
+				Groups group = Groups.getGroupByName(groupName);
+				if (group != null) {
+					String teamName = group.getPriority() + "_" + group.getIdentifier();
+					targetTeam = scoreboard.getTeam(teamName);
+				}
+			}
+
+			if (currentTeam != null && (!currentTeam.equals(targetTeam))) {
+				currentTeam.removeEntry(playerName);
+			}
+
+			if (targetTeam != null && (currentTeam == null || !currentTeam.equals(targetTeam))) {
+				targetTeam.addEntry(playerName);
+
+				if (groupName.equals("default")) {
+					player.setPlayerListName(playerName);
+				} else {
+					Groups group = Groups.getGroupByName(groupName);
+					if (group != null) {
+						String formatted = ColorUtil.format("<gradient=" + group.getGradientStart() + "," + group.getGradientEnd() + "><bold>" + group.getName().toUpperCase() + "</bold></gradient>");
+						player.setPlayerListName(formatted + " §8§l➛ §r§f" + playerName);
+					}
+				}
+			}
+		} catch (Exception e) {
+			FlockAPI.getInstance().getLogger().warning("Error managing team for player " + player.getName() + ": " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
